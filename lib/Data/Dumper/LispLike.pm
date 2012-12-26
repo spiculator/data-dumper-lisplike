@@ -1,9 +1,19 @@
+use strict;
+use warnings;
+package Data::Dumper::LispLike;
+
+use Exporter ();
+our $VERSION = 0.01;
+our @ISA = qw(Exporter);
+our @EXPORT = qw(&dumplisp);
+
 sub dumplisp_scalar($) {
 	1 == @_ or die;
 	my $scalar = shift;
-	check_defined_scalar $scalar;
+	die unless defined($scalar) and not ref($scalar);
 	return( $scalar =~ /^[\w\-%:,\!=]+$/ ? $scalar : "'$scalar'" );
 }
+
 sub dumplisp_iter($;$$);
 sub dumplisp_iter($;$$) {
 	1 == @_ or 2 == @_ or 3 == @_ or die;
@@ -52,10 +62,13 @@ sub dumplisp_iter($;$$) {
 		die;
 	}
 }
+
 sub dumplisp($) {
+	1 == @_ or die "Usage: dumplisp(<expression>)\n";
 	my $out = dumplisp_iter shift;
 	chomp $out;
 	$out =~ s/^\n//;
 	return "$out\n";
 }
 
+1;
