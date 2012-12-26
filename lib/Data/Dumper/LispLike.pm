@@ -134,8 +134,7 @@ Here is a bigger real-life example of dumplisp() output:
             (ASSIGN %state %stat::state))
         (AND
             (BLOCK (OR (CMDRUN userspace) (COMPARE == %pid 2)))
-            (AND
-                (BLOCK
+            (BLOCK
                     (OR (CMDRUN userspace) (COMPARE == %pid 23)))
             (CMDRUN ps)))
 
