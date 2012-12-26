@@ -3,7 +3,7 @@ use warnings;
 package Data::Dumper::LispLike;
 
 use Exporter ();
-our $VERSION = 0.01;
+our $VERSION = 0.001;
 our @ISA = qw(Exporter);
 our @EXPORT = qw(&dumplisp);
 
