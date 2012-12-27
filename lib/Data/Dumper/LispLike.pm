@@ -30,7 +30,7 @@ sub dumplisp_scalar($) {
 	1 == @_ or die;
 	my $scalar = shift;
 	die unless defined($scalar) and not ref($scalar);
-	return( $scalar =~ /^[\w\-%:,\!=]+$/ ? $scalar : "'$scalar'" );
+	return( $scalar =~ /^[\w\-%\/,\!\?=]+$/ ? $scalar : "'$scalar'" );
 }
 
 sub dumplisp_iter($;$$);
