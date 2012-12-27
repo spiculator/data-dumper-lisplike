@@ -1,3 +1,4 @@
-dist:
-	rm -rf Data-Dumper-LispLike*
+dist: clean
 	dzil build
+clean:
+	rm -rf Data-Dumper-LispLike*
