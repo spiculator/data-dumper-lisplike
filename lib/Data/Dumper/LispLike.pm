@@ -16,6 +16,16 @@ Indentation string. Default is "    " (four spaces).
 
 our $indent = "    ";
 
+=attr $Data::Dumper::LispLike::maxsimplewidth
+
+Maximum width of s-expression that is considered "simple",
+i.e. that fits into one line and does not need to be split
+into many lines. Default is 60.
+
+=cut
+
+our $maxsimplewidth = 60;
+
 sub dumplisp_scalar($) {
 	1 == @_ or die;
 	my $scalar = shift;
@@ -28,7 +38,7 @@ sub dumplisp_iter($;$$) {
 	1 == @_ or 2 == @_ or 3 == @_ or die;
 	my ($lisp, $level, $maxlength) = @_;
 	$level ||= 0;
-	$maxlength = 60 unless defined $maxlength;
+	$maxlength = $maxsimplewidth unless defined $maxlength;
 	my $simple = ( $level < 0 );
 	if( not defined $lisp ) {
 		die;
