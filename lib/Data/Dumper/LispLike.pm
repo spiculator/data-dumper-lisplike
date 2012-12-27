@@ -8,6 +8,14 @@ use Exporter ();
 our @ISA = qw(Exporter);
 our @EXPORT = qw(&dumplisp);
 
+=attr $Data::Dumper::LispLike::indent
+
+Indentation string. Default is "    " (four spaces).
+
+=cut
+
+our $indent = "    ";
+
 sub dumplisp_scalar($) {
 	1 == @_ or die;
 	my $scalar = shift;
@@ -22,7 +30,6 @@ sub dumplisp_iter($;$$) {
 	$level ||= 0;
 	$maxlength = 60 unless defined $maxlength;
 	my $simple = ( $level < 0 );
-	my $indent = "    ";
 	if( not defined $lisp ) {
 		die;
 	} elsif( not ref $lisp ) {
@@ -64,7 +71,7 @@ sub dumplisp_iter($;$$) {
 	}
 }
 
-=func dumplisp
+=func dumplisp()
 
     my $listref = ...;
     print dumplisp $listref;
