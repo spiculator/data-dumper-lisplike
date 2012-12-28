@@ -69,7 +69,10 @@ sub dumplisp_iter($;$$) {
 				my $try_out = $out . $try_add;
 				return $try_out if length $try_out <= $maxlength;
 			}
-			$out .= "(" . dumplisp_scalar shift @l;
+			$out .= "(";
+			if( defined($l[0]) and not ref($l[0]) ) {
+				$out .= dumplisp_scalar shift @l;
+			}
 			$out .= dumplisp_iter( $_, $level + 1 ) foreach @l;
 		}
 		$out .= ")";
