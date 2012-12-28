@@ -40,15 +40,14 @@ sub dumplisp_iter($;$$) {
 	$level ||= 0;
 	$maxlength = $maxsimplewidth unless defined $maxlength;
 	my $simple = ( $level < 0 );
+	my $out = $simple ? "" : "\n" . ( $indent x $level );
 	if( not defined $lisp ) {
-		die;
+		return "$out<undef>";
 	} elsif( not ref $lisp ) {
-		my $out = $simple ? "" : "\n" . ( $indent x $level );
 		$out .= dumplisp_scalar $lisp;
 		die if length $out > $maxlength;
 		return $out;
 	} elsif( 'ARRAY' eq ref $lisp ) {
-		my $out = $simple ? "" : "\n" . ( $indent x $level );
 		die if $simple and length $out > $maxlength;
 		my @l = @$lisp;
 		my $first = 1;
@@ -76,8 +75,12 @@ sub dumplisp_iter($;$$) {
 		$out .= ")";
 		die if $simple and length $out > $maxlength;
 		return $out;
+	} elsif( 'HASH' eq ref $lisp ) {
+		...
+	} elsif( 'CODE' eq ref $lisp ) {
+		return "$out<code>";
 	} else {
-		die;
+		return "$out<blessed: " . dumplisp_scalar(ref $lisp) . ">";
 	}
 }
 
