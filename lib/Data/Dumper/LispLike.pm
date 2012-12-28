@@ -76,7 +76,6 @@ sub dumplisp_iter($;$$) {
 			$out .= dumplisp_iter( $_, $level + 1 ) foreach @l;
 		}
 		$out .= ")";
-		die if $simple and length $out > $maxlength;
 		return $out;
 	} elsif( 'HASH' eq ref $lisp ) {
 		...
