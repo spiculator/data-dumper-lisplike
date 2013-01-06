@@ -44,9 +44,7 @@ sub dumplisp_iter($;$$) {
 	if( not defined $lisp ) {
 		return "$out<undef>";
 	} elsif( not ref $lisp ) {
-		$out .= dumplisp_scalar $lisp;
-		die if length $out > $maxlength;
-		return $out;
+		return $out . dumplisp_scalar $lisp;
 	} elsif( 'ARRAY' eq ref $lisp ) {
 		my @l = @$lisp;
 		my $first = 1;
