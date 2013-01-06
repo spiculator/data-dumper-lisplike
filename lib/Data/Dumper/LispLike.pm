@@ -7,6 +7,7 @@ package Data::Dumper::LispLike;
 use Exporter ();
 our @ISA = qw(Exporter);
 our @EXPORT = qw(&dumplisp);
+# VERSION
 
 =attr $Data::Dumper::LispLike::indent
 
