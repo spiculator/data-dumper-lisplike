@@ -77,12 +77,8 @@ sub dumplisp_iter($;$$) {
 		}
 		$out .= ")";
 		return $out;
-	} elsif( 'HASH' eq ref $lisp ) {
-		...
-	} elsif( 'CODE' eq ref $lisp ) {
-		return "$out<code>";
 	} else {
-		return "$out<blessed: " . dumplisp_scalar(ref $lisp) . ">";
+		die "cannot dumplip " . ref($lisp) . "\n";
 	}
 }
 
