@@ -111,44 +111,76 @@ Here is a bigger real-life example of dumplisp() output:
 
     (COMMA
         (AND
+            (CMDDEF -writeln (%str) (BLOCK (CMDRUN -write '%str\n')))
+            (CMDDEF -writeln1 (%STR) (BLOCK (CMDRUN -write1 '%STR\n')))
             (CMDDEF
-                echo
-                (%str)
-                (BLOCK (CMDRUN printf '%str\n')))
+                -warn
+                (%WARN_MESSAGE)
+                (BLOCK (CMDRUN -warnf '%WARN_MESSAGE\n')))
+            (CMDDEF -abort () (BLOCK (CMDRUN -exit 1)))
             (CMDDEF
-                echo1
-                (%STR)
-                (BLOCK (CMDRUN print1 '%STR\n')))
-            (CMDDEF kill () (BLOCK (CMDRUN signal KILL)))
-            (CMDDEF term () (BLOCK (CMDRUN signal TERM)))
-            (CMDDEF hup () (BLOCK (CMDRUN signal HUP)))
-            (CMDDEF ps () (BLOCK (CMDRUN exec ps uf '{}')))
+                -die
+                (%DIE_MESSAGE)
+                (BLOCK (COMMA (CMDRUN -warn %DIE_MESSAGE) (CMDRUN -abort))))
+            (IF
+                (OPTION
+                    (COMPARE != %UNAME/SYSNAME Linux)
+                    (CMDRUN -die 'pfind is only for linux')))
+            (CMDDEF -kill () (BLOCK (CMDRUN -signal KILL)))
+            (CMDDEF -term () (BLOCK (CMDRUN -signal TERM)))
+            (CMDDEF -hup () (BLOCK (CMDRUN -signal HUP)))
+            (CMDDEF -ps () (BLOCK (CMDRUN -exec ps uf '{}')))
             (CMDDEF
                 pso
                 (%PS_FIELDS)
-                (BLOCK (CMDRUN exec ps '-o\-' %PS_FIELDS '{}')))
+                (BLOCK (CMDRUN -exec ps '\q-o' %PS_FIELDS '{}')))
+            (CMDDEF -exe (%exe_arg) (BLOCK (COMPARE == %exe %exe_arg)))
+            (CMDDEF -cwd (%cwd_arg) (BLOCK (COMPARE == %cwd %cwd_arg)))
+            (ASSIGN %vsz %statm/size)
+            (ASSIGN %rss %statm/resident)
+            (CMDDEF -kthread () (BLOCK (COMPARE == 0 %rss)))
+            (CMDDEF -userspace () (BLOCK (NOT (CMDRUN -kthread))))
+            (ASSIGN %ppid %stat/ppid)
+            (ASSIGN %comm %stat/comm)
+            (ASSIGN %nice %stat/nice)
+            (ASSIGN
+                %nice_flag
+                (CONDITIONAL
+                    (OPTION (COMPARE -lt %nice 0) '<')
+                    (OPTION (COMPARE -gt %nice 0) N)
+                    (DEFAULT '')))
+            (ASSIGN %s %stat/state)
+            (ASSIGN %state %s%nice_flag)
+            (ASSIGN %name %status/Name)
             (CMDDEF
-                exe
-                (%exe_arg)
-                (BLOCK (COMPARE == %exe %exe_arg)))
+                -grep
+                (%GREP_ARG)
+                (BLOCK
+                    (OR
+                        (COMPARE -m %exe '*%GREP_ARG*')
+                        (COMPARE -m %comm '*%GREP_ARG*')
+                        (COMPARE -m %name '*%GREP_ARG*'))))
             (CMDDEF
-                cwd
-                (%cwd_arg)
-                (BLOCK (COMPARE == %cwd %cwd_arg)))
-            (ASSIGN %vsz %statm::size)
-            (ASSIGN %rss %statm::resident)
-            (CMDDEF kthread () (BLOCK (COMPARE == 0 %rss)))
+                -egrep
+                (%EGREP_ARG)
+                (BLOCK
+                    (OR
+                        (COMPARE '=~' %exe %EGREP_ARG)
+                        (COMPARE '=~' %comm %EGREP_ARG)
+                        (COMPARE '=~' %name %EGREP_ARG))))
+            (ASSIGN %command %tree%name)
             (CMDDEF
-                userspace
+                -pstree
                 ()
-                (BLOCK (NOT (CMDRUN kthread))))
-            (ASSIGN %ppid %stat::ppid)
-            (ASSIGN %comm %stat::comm)
-            (ASSIGN %state %stat::state))
+                (BLOCK
+                    (AND
+                        (CMDRUN -settree)
+                        (CMDRUN -echo %ppid %pid %state %command)))))
         (AND
-            (BLOCK
-                (OR (CMDRUN userspace) (COMPARE == %pid 23)))
-            (CMDRUN ps)))
+            (BLOCK (OR (CMDRUN -userspace) (COMPARE == %pid 23)))
+            (CMDRUN -head 10)
+            (CMDRUN -echo %pid %ppid %stat/ppid)
+            (CMDRUN -ps)))
 
 =head1 SUPPORT
 
