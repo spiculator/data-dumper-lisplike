@@ -60,11 +60,10 @@ sub dumplisp_iter($;$$) {
 			}
 		} else { # not $simple and @l not empty
 			my $try_add = eval {
-				dumplisp_iter( $lisp, -1, $maxlength - length $out );
+				dumplisp_iter( $lisp, -1, $maxlength );
 			};
-			if( defined $try_add ) {
-				my $try_out = $out . $try_add;
-				return $try_out if length $try_out <= $maxlength;
+			if( defined($try_add) and length($try_add) <= $maxlength ) {
+				return $out . $try_add;
 			}
 			$out .= "(";
 			if( defined($l[0]) and not ref($l[0]) ) {
