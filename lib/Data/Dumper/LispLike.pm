@@ -47,11 +47,11 @@ sub dumplisp_iter($;$$) {
 		return $out . dumplisp_scalar $lisp;
 	} elsif( 'ARRAY' eq ref $lisp ) {
 		my @l = @$lisp;
-		my $first = 1;
 		if( not @l ) {
 			$out .= "(";
 		} elsif( $simple ) {
 			$out .= "(";
+			my $first = 1;
 			foreach my $current ( @l ) {
 				$out .= " " unless $first;
 				undef $first;
@@ -71,8 +71,7 @@ sub dumplisp_iter($;$$) {
 			}
 			$out .= dumplisp_iter( $_, $level + 1 ) foreach @l;
 		}
-		$out .= ")";
-		return $out;
+		return "$out)";
 	} else {
 		die "cannot dumplisp " . ref($lisp) . "\n";
 	}
