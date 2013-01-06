@@ -48,7 +48,6 @@ sub dumplisp_iter($;$$) {
 		die if length $out > $maxlength;
 		return $out;
 	} elsif( 'ARRAY' eq ref $lisp ) {
-		die if $simple and length $out > $maxlength;
 		my @l = @$lisp;
 		my $first = 1;
 		if( not @l ) {
