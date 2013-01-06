@@ -74,7 +74,7 @@ sub dumplisp_iter($;$$) {
 		$out .= ")";
 		return $out;
 	} else {
-		die "cannot dumplip " . ref($lisp) . "\n";
+		die "cannot dumplisp " . ref($lisp) . "\n";
 	}
 }
 
