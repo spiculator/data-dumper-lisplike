@@ -26,11 +26,28 @@ into many lines. Default is 60.
 
 our $maxsimplewidth = 60;
 
+our %escapes = (
+	"\a"	=> '\a',
+	"\b"	=> '\b',
+	"\e"	=> '\e',
+	"\f"	=> '\f',
+	"\n"	=> '\n',
+	"\r"	=> '\r',
+	"\t"	=> '\t',
+	"\\"	=> "\\\\",
+);
+
 sub dumplisp_scalar($) {
 	1 == @_ or die;
 	my $scalar = shift;
 	die unless defined($scalar) and not ref($scalar);
-	return( $scalar =~ /^[\w\-%\/,\!\?=]+$/ ? $scalar : "'$scalar'" );
+	unless( $scalar =~ /^[\w\-%\/,\!\?=]+$/ ) {
+		$scalar =~
+			s/([^\w\-%\/,\!\?=\`~@#\$^&*\(\)+\[\]\{\}\|;:"\.<> ])/
+			$escapes{$1} || sprintf '\x%X', ord $1/eg;
+		$scalar = "'$scalar'";
+	}
+	return $scalar;
 }
 
 sub dumplisp_iter($;$$);
